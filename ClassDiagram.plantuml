@@ -1,0 +1,146 @@
+@startuml
+class User
+class Animal
+class Event
+class DogSchool
+class DogSchoolMembership
+class MediaObject
+class DayBookEntry
+class DayBookEntryCategory
+
+enum DogSchoolMembershipRole
+enum EventType
+enum AnimalType
+
+User "1" *-- "many" DogSchool : > operates
+User "1" *-- "many" Animal : > has
+User "1" *-- "many" DogSchoolMembership : > owned
+User "1" *-- "0...1" MediaObject : > can have
+User "1" *-- "many" DayBookEntry : > creates
+User "1" *-- "many" DayBookEntryCategory : > can create
+
+DogSchool "1" o-- "many" DogSchoolMembership : > has
+DogSchool "1" o-- "many" Event : > creates
+
+DogSchoolMembership "many" o-- "many" Event : > is member
+DogSchoolMembership --- DogSchoolMembershipRole
+
+Animal "1" o-- "0...1" MediaObject : > can have
+Animal --- AnimalType
+
+DayBookEntry "1" o-- "0...1" MediaObject : > can have
+DayBookEntry "many" o-- "many" DayBookEntryCategory : > can have
+
+Event --- EventType
+
+User : -id: GUID
+User : -firstname: string
+User : -lastname: string
+User : -username: string
+User : -image: MediaObject
+User : -imageUrl: string
+User : -email: string
+User : +create(user: User)
+User : +confirmEmail(confirmationString: GUID)
+User : +update(user: User)
+User : +delete(user: User)
+User : +acceptDogSchoolMembershipInvitation(dogSchoolId: GUID)
+User : +revokeDogSchoolMembership(dogSchoolId: GUID)
+
+MediaObject : -id: int
+MediaObject : -contentUrl: string
+MediaObject : -filePath: string
+MediaObject : -owner: User
+MediaObject : +create(owner: User, media: File)
+MediaObject : +delete(id: int)
+
+Animal : -id: GUID
+Animal : -name: string
+Animal : -birthday: date
+Animal : -breed: string
+Animal : -image: MediaObject
+Animal : -imageUrl: string
+Animal : -type: AnimalType
+Animal : +create(animal: Animal, owner: User)
+Animal : +update(animal: Animal, owner: User)
+Animal : +getAllByUserId(userId: GUID)
+Animal : +getById(id: GUID)
+Animal : +delete(animal: Animal)
+
+DayBookEntry : -id: GUID
+DayBookEntry : -title: string
+DayBookEntry : -desc: string
+DayBookEntry : -dateTime: dateTime
+DayBookEntry : -image: MediaObject
+DayBookEntry : -imageUrl: string
+DayBookEntry : -isTemplate: boolean
+DayBookEntry : -isPlanned: boolean
+DayBookEntry : -category: DayBookEntryCategory
+DayBookEntry : +createDayBookEntry(entry: DayBookEntry)
+DayBookEntry : +updateDayBookEntry(entry: DayBookEntry)
+DayBookEntry : +getAllByUserId(userId: GUID)
+DayBookEntry : +getById(id: GUID)
+DayBookEntry : +delete(id: GUID)
+
+DayBookEntryCategory : -id: GUID
+DayBookEntryCategory : -title: string
+DayBookEntryCategory : -desc: string
+DayBookEntryCategory : +create(category: DayBookEntryCategory)
+DayBookEntryCategory : +update(category: DayBookEntryCategory)
+DayBookEntryCategory : +getAllByUserId(userId: GUID)
+DayBookEntryCategory : +getById(id: GUID)
+DayBookEntryCategory : +delete(id: GUID)
+
+DogSchool : -title: string
+DogSchool : -desc: string
+DogSchool : -dogSchoolMemberships: DogSchoolMembership[]
+DogSchool : +create(dogSchool: DogSchool)
+DogSchool : +update(dogSchool: DogSchool)
+DogSchool : +getAllByUserId(userId: GUID)
+DogSchool : +getById(id: GUID)
+DogSchool : +delete(id: GUID)
+DogSchool : +sendMembershipInvitation(userId: GUID)
+DogSchool : +planDayBookEntry(userId: GUID, dayBookEntry: DayBookEntry)
+
+DogSchoolMembership : -user: User
+DogSchoolMembership : -dogSchool: DogSchool
+DogSchoolMembership : -roles: DogSchoolMembershipRole[]
+DogSchoolMembership : -createdAt: date
+DogSchoolMembership : -updatedAt: date
+DogSchoolMembership : +create(dsm: DogSchoolMembership)
+DogSchoolMembership : +update(dsm: DogSchoolMembership)
+DogSchoolMembership : +getByUserId(id: GUID)
+DogSchoolMembership : +getByDogSchoolId(id: GUID)
+DogSchoolMembership : +getById(id: GUID)
+DogSchoolMembership : +delete(id: GUID)
+
+Event : -title: string
+Event : -desc: string
+Event : -createdAt: date
+Event : -updatedAt: date
+Event : -dateStart: date
+Event : -dateEnd: date
+Event : -type: EventType
+Event : -owner: DogSchool
+Event : -members: DogSchoolMembership[]
+Event : +create(event: Event, dogSchool: DogSchool)
+Event : +update(event: Event, dogSchool: DogSchool)
+Event : +getByDogSchoolId(id: GUID)
+Event : +getById(id: GUID)
+Event : +delete(id: GUID)
+Event : +addMembers(members: DogSchoolMembership[])
+Event : +removeMember(member: DogSchoolMembership)
+
+EventType : DOGWALK
+EventType : LESSON
+EventType : GROUPLESSON
+
+DogSchoolMembershipRole : MEMBER
+DogSchoolMembershipRole : OWNER
+DogSchoolMembershipRole : ADMIN
+DogSchoolMembershipRole : EDITOR
+
+AnimalType : DOG
+AnimalType : CAT
+
+@enduml

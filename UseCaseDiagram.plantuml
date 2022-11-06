@@ -1,0 +1,15 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor Hundebesitzer
+actor Hundetrainer
+rectangle "Online Hundeschule" {
+    (Verwaltet Hundeschule) --- Hundetrainer
+    (Veranstalet Events) --- Hundetrainer
+    Hundebesitzer --- (Nimmt an Events teil)
+    Hundebesitzer --- (Erstellt Tagebucheinträge)
+    Hundebesitzer --- (Ist Mitglied einer Hundeschule)
+    (Überprüft Tagebucheinträge) --- Hundetrainer
+    (Plant Trainingseinheiten) --- Hundetrainer
+}
+@enduml
